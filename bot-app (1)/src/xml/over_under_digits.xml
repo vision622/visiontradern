@@ -1,0 +1,128 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" is_dbot="true" collection="false">
+  <variables>
+    <variable type="" id="ovr:digit" islocal="false" iscloud="false">over_under:digit</variable>
+    <variable type="" id="ovr:stake" islocal="false" iscloud="false">over_under:stake</variable>
+    <variable type="" id="ovr:tradeIndex" islocal="false" iscloud="false">over_under:tradeIndex</variable>
+  </variables>
+  <block type="trade_definition" id="over-under-root" deletable="false" x="0" y="0">
+    <statement name="TRADE_OPTIONS">
+      <block type="trade_definition_market" id="over-under-market" deletable="false" movable="false">
+        <field name="MARKET_LIST">synthetic_index</field>
+        <field name="SUBMARKET_LIST">random_index</field>
+        <field name="SYMBOL_LIST">1HZ10V</field>
+        <next>
+          <block type="trade_definition_tradetype" id="over-under-tradetype" deletable="false" movable="false">
+            <field name="TRADETYPECAT_LIST">digits</field>
+            <field name="TRADETYPE_LIST">overunder</field>
+            <next>
+              <block type="trade_definition_contracttype" id="over-under-contracttype" deletable="false" movable="false">
+                <field name="TYPE_LIST">both</field>
+                <next>
+                  <block type="trade_definition_candleinterval" id="over-under-interval" deletable="false" movable="false">
+                    <field name="CANDLEINTERVAL_LIST">60</field>
+                    <next>
+                      <block type="trade_definition_restartbuysell" id="over-under-restart" deletable="false" movable="false">
+                        <field name="TIME_MACHINE_ENABLED">FALSE</field>
+                        <next>
+                          <block type="trade_definition_restartonerror" id="over-under-restart-error" deletable="false" movable="false">
+                            <field name="RESTARTONERROR">TRUE</field>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="INITIALIZATION">
+      <block type="variables_set" id="over-under-init-digit">
+        <field name="VAR" id="ovr:digit" variabletype="">over_under:digit</field>
+        <value name="VALUE">
+          <block type="math_number" id="ovr-digit-default">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set" id="over-under-init-stake">
+            <field name="VAR" id="ovr:stake" variabletype="">over_under:stake</field>
+            <value name="VALUE" strategy_value="stake">
+              <shadow type="math_number" id="ovr-stake-shadow">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="SUBMARKET">
+      <block type="trade_definition_tradeoptions" id="over-under-tradeoptions">
+        <mutation has_first_barrier="false" has_second_barrier="false" has_prediction="true"></mutation>
+        <field name="DURATIONTYPE_LIST">t</field>
+        <value name="DURATION" strategy_value="duration">
+          <shadow type="math_number" id="over-under-duration-shadow">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="AMOUNT" strategy_value="stake">
+          <shadow type="math_number" id="over-under-amount-shadow">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="PREDICTION" strategy_value="last_digit_prediction">
+          <shadow type="math_number_positive" id="over-under-prediction-shadow">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="before_purchase" id="over-under-before" deletable="false" x="0" y="420">
+    <statement name="BEFOREPURCHASE_STACK">
+      <block type="variables_set" id="over-under-set-digit">
+        <field name="VAR" id="ovr:digit" variabletype="">over_under:digit</field>
+        <value name="VALUE">
+          <block type="last_digit" id="over-under-last-digit"></block>
+        </value>
+        <next>
+          <block type="controls_if" id="over-under-bias">
+            <mutation else="1"></mutation>
+            <value name="IF0">
+              <block type="logic_compare" id="over-under-compare">
+                <field name="OP">LTE</field>
+                <value name="A">
+                  <block type="variables_get" id="over-under-digit-var">
+                    <field name="VAR" id="ovr:digit" variabletype="">over_under:digit</field>
+                  </block>
+                </value>
+                <value name="B">
+                  <block type="math_number" id="over-under-digit-4">
+                    <field name="NUM">4</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="purchase" id="over-under-purchase-under-4">
+                <field name="PURCHASE_LIST">DIGITUNDER</field>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="purchase" id="over-under-purchase-over-4">
+                <field name="PURCHASE_LIST">DIGITOVER</field>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="after_purchase" id="over-under-after" deletable="false" x="0" y="620">
+    <statement name="AFTERPURCHASE_STACK">
+      <block type="trade_again" id="over-under-trade-again"></block>
+    </statement>
+  </block>
+</xml>
