@@ -1,0 +1,12 @@
+{
+  "name": "visiontradern-root",
+  "private": true,
+  "workspaces": [
+    "bot-app (1)"
+  ],
+  "scripts": {
+    "build": "cd \"bot-app (1)\" && npm run build",
+    "dev": "cd \"bot-app (1)\" && npm run dev",
+    "test": "cd \"bot-app (1)\" && npm test"
+  }
+}

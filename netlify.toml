@@ -1,0 +1,6 @@
+[build]
+  command = "cd \"bot-app (1)\" && npm run build"
+  publish = "bot-app (1)/dist"
+
+[build.environment]
+  NODE_VERSION = "24"
